@@ -1,3 +1,8 @@
+\makeatletter
+\let\longtable\oldlt
+\let\endlongtable\endoldlt
+\makeatother
+
 # Parallelprogrammierung
 
 **Uniform Memory access (UMA):** .

@@ -1,7 +1,7 @@
 ---
-title: "Programmierparadigmen macht Spaß"
-author: "Darius Schefer, Max Schik"
-geometry: margin=2cm
+title: "Programmierparadigmen Cheat Sheet"
+author: "Linus Schöb (Darius Schefer, Max Schik)"
+geometry: margin=1cm,footskip=0.5cm
 output: pdf_document
 ---
 
