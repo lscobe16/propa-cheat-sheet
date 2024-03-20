@@ -1,34 +1,54 @@
 # Haskell
-Haskell is great.
+
+Referenzielle Transparenz:
+Im gleichen Gültigkeitsbereich bedeuten gleiche Ausdrücke stets das
+gleiche. Zwei verschiedene Ausdrücke, die zum gleichen Wert auswerten,
+können stets durch den anderen ersetzt werden, ohne die Bedeutung des
+Programms zu verändern.
 
 ## General Haskell stuff
 ```haskell
-
 -- type definitions are right associative
+foo :: a  -> b  -> c  -> d
 foo :: (a -> (b -> (c -> d)))
 -- function applications are left associative
+foo a b c d
 ((((foo a) b) c) d)
 
--- guards are unnecessary if you know how pattern matching works
-foo x y
-  | x > y = "shit"
-  | x < y = "piss"
-  | x == y = "arschsekretlecker"
-  | default = "love"
-
--- case of does pattern matching so its okay
-foo x = case x of
-          [] -> "fleischpenis"
-          [1] -> "kokern"
-          (420:l) -> "pimpern"
-
--- list comprehension is not as good as in python
-[foo x | x <- [1..420], x `mod` 2 == 0]
-
-[0..5] == [0,1,2,3,4,5]
+-- pattern matching can use constructors and constants
+head (x:x2:xs) = x
+only [x] = x
+first (Pair a b) = a
+first (a, b) = a
+response "hello" = "world"
 
 -- alias for pattern matching
 foo l@(x:xs) = l == (x:xs) -- returns true
+
+-- guards
+foo x y
+  | x > y = "bigger"
+  | x < y = "smaller"
+  | x == y = "equal"
+  | otherwise = "love"
+
+-- case of does pattern matching
+foo x = case x of
+          [] -> "salad"
+          [1] -> "apple"
+          (420:l) -> "pear"
+
+-- linear recursion = only one recursive branch per call
+-- end recursion = linear recursion + nothing to do with the result after recursive call
+-- end recursion makes things memory efficient
+fak n = fakAcc n 1
+  where fakAcc n acc = if (n==0) then acc else fakAcc (n-1) (n*acc)
+-- end of where is determined by indentation!
+
+-- list comprehension
+[foo x | x <- [1..420], x `mod` 2 == 0]
+
+[0..5] == [0,1,2,3,4,5]
 
 -- combine two functions
 f :: a -> b
@@ -37,16 +57,24 @@ g :: b -> c
 h :: a -> c
 h = f . g
 
+-- type alias
+type Car = (String,Int)
+
+-- data types
 data Tree a = Leaf
               | Node (Tree a) a (Tree a)
               deriving (Show)
 
--- defines interface
+-- defines interfac
 class Eq t where
   (==) :: t -> t -> Bool
   (/=) :: t -> t -> Bool
   -- default implementation
   x /= y = not $ x == y
+
+class Coll c where
+  contains :: (Ord t) =>
+  (c t) -> t -> Bool
 
 -- extends interface
 class (Show t) => B t where
@@ -61,34 +89,34 @@ instance Eq Bool where
 ```
 
 ## Important functions
+
+See extra Cheat Sheet: https://github.com/rudymatela/concise-cheat-sheets
+
+`foldr` can handle infinite lists (streams) if combinator does sometimes not depend on right rest. `foldl` cannot.
+Result is a list => probably want to use foldr
+
+Additional functions (maybe handwrite on other cheatsheet):
 ```haskell
--- maps a function to a list
-map :: (a -> b) -> [a] -> [b]
--- filters a list with a predicate
-filter :: (a -> Bool) -> [a] -> [a]
--- fold from left
-foldl :: Foldable t => (b -> a -> b) -> b -> t a -> b
--- fold from right
-foldr :: Foldable t => (a -> b -> b) -> b -> t a -> b
--- checks if a in collection
-elem :: (Foldable t, Eq a) => a -> t a -> Bool
 -- in a list of type [(key, value)]  returns first element where key matches given value
 lookup :: Eq a => a -> [(a, b)] -> Maybe b
--- repeated application of function
-iterate :: (a -> a) -> a -> [a]
--- repeats constant in infinite list
-repeat :: a -> [a]
 -- applies function until the predicate is true
 until :: (a -> Bool) -> (a -> a) -> a -> a
 -- returns true if the predicate is true for at least one element
 any :: Foldable t => (a -> Bool) -> t a -> Bool
 -- return true if the predicate is true for all elements
 all :: Foldable t => (a -> Bool) -> t a -> Bool
--- flips the parameters of a function
-flip :: (a -> b -> c) -> b -> a -> c
--- combines two lists to a list of tuples
-zip :: [a] -> [b] -> [(a, b)]
--- combines two lists with the given function
-zipWith :: (a -> b -> c) -> [a] -> [b] -> [c]
+-- reverse list
+reverse = foldl (flip (:)) []
 ```
 
+## Idioms
+
+```haskell
+-- backtracking
+backtrack :: Conf -> [Conf]
+backtrack conf
+  | solution conf = [conf]
+  | otherwise = concat (map backtrack (filter legal (successors conf)))
+
+solutions = backtrack initial
+```
