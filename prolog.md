@@ -2,56 +2,83 @@
 
 ## Generelles Zeug
 Prolog ist nicht vollständig da die nächste Regel deterministisch gewählt wird, daher können Endlosschleifen entstehen und keine Lösung gefunden werden obwohl sie existiert.
-```prolog
-% klein geschriebene Namen sind Atome
-mag(ich, dich). % nein tu ich nicht
 
+Kleingeschriebene Wörter sind Atome. Großbuchstaben sind Variablen. `_` ist Platzhalter-Variable.
+
+Prädikat heißt deterministisch gdw. stets es auf höchstens eine Weise erfüllt werden kann.
+
+```prolog
 % Prolog erfüllt Teilziele von links nach rechts
 foo(X) :- subgoal1(X), subgoal2(X), subgoal3(X).
 
-% ! signalisiert einen cut, alles vor dem cut ist nicht reerfüllbar.
+% ! = Cut = alles links (inklusive Prädikat links von :-) ist nicht reerfüllbar.
 % Arten von Cuts:
-%  - Blauer Cut
-%      - beeinflusst weder Programmlaufzeit, noch -verhalten
-%  - Grüner Cut
-%      - beeinflusst Laufzeit, aber nicht Verhalten
-%  - Roter Cut
-%      - beeinflusst das Programmverhalten
-% Zuweisungen immer nach dem cut!
+%  - Blauer Cut: beeinflusst weder Programmlaufzeit, noch -verhalten
+%  - Grüner Cut: beeinflusst Laufzeit, aber nicht Verhalten
+%  - Roter Cut: beeinflusst das Programmverhalten (häufig: letzten Wächter unnötig machen)
+% Faustregel: Cut kommt, wenn wir sicher im richtigen Zweig sind, Ergebnisse danach
 foo(X, Y) :- operation_where_we_only_want_the_first_result(X, Z), !, Y = Z.
 
-% generate and test
+% Idiom: generate and test
 foo(X, Y) :- generator(X, Y), tester(Y).
+% z.B.:
+sqrt(X,Y) :- nat(Y),
+    Y2 is Y*Y, Y3 is (Y+1)*(Y+1),
+    Y2 =< X, X < Y3.
+% Früher testen => effizienter
 
-% listen sind so wie in haskell
-foo([H|T]) :- ...
+% Listen mit Cons:
+[1,2,3] = [1|[2|[3|[]]]].
+[1,2,3|[4,5,6,7]] = [1,2,3,4,5,6,7].
 
-% weitere listen sachen
-[1,2,3|[4,5,6,7]] = [1,2,3,4,5,6,7]
-
-% Arithmetik ist komisch. 2 - 1 ist ein Term, keine Zahl!
-2 - 1 \= 1
-
-% Um Terme auszuwerten braucht man "is"
+% === Arithmetik
+% erstmal nur Terme:
+2 - 1 \= 1.
+% Auswerten mit "is":
 N1 is N - 1.
+% Arithmetische Vergleiche:
+=:=, =\=, <,=<, >, >=
 ```
 
 ## Wichtige Funktionen
+Built-In:
 ```prolog
-% prüft ob X in L
-member(X, L).
+% member(X, L): X ist in Liste L  (alle Richtungen)
+member(X,[X|R]).
+member(X,[Y|R]) :- member(X,R).
 
-% fügt A und B zu C zusammen.
-append(A, B, C).
+% append(A, B, C): C = A ++ B  (alle Richtungen)
+append([],L,L).
+append([X|R],L,[X|T]) :- append(R,L,T).
 
-% Länge N einer Liste L
+% reverse(L, R): R ist Liste L rückwerts  (alle Richtungen)
+reverse([],[]).
+reverse([X|R],Y) :- reverse(R,Y1),append(Y1,[X],Y).
+
+% N ist Länger der Liste L   (alle Richtungen)
 length(L, N).
 
-% sowas wie append kann auch als Generator verwendet werden, sofern C instanziiert ist.
-append(A, B, C) % A und B gehen durch alle Teillisten von C
+% Prüft, ob Prädikat X erfüllbar ist (NICHT: findet Instanziierung, sodass X nicht erfüllt ist)
+not(X) :- call(X),!,fail.
+not(X).
 
-% Negation
-not(X). % X ist ein prädikat
+% Prüft, dass nicht gleich  (alle Richtungen)
+dif(X, Y) :- when(?=(X,Y), X \== Y)
+
+% Meta
+atom(X). % Prüft ob X ein Atom ist
+integer(X). % Prüft ob X eine Zahl ist
+atomic(X). % Prüft ob X ein Atom oder eine Zahl ist
 ```
 
+Weiter:
+```prolog
+% Prüft ob Permutation voneinander. Iteriert durch alle Permutationen bei Reerfüllung   (alle Richtungen)
+permute([],[]).
+permute([X|R],P) :- permute(R,P1),append(A,B,P1),append(A,[X|B],P).
 
+% lookup(N, D, A) mit A uninstanziiert: A <- D[N] nachschauen
+% lookup(N, D, A) mit A instanziiert: D[N] <- A setzen 
+lookup(N,[(N,A)|_],A1) :- !,A=A1.
+lookup(N,[_|T],A) :- lookup(N,T,A).
+```
