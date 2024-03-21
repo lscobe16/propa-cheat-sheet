@@ -1,5 +1,7 @@
 # Haskell
 
+\Begin{multicols}{2}
+
 Referenzielle Transparenz:
 Im gleichen Gültigkeitsbereich bedeuten gleiche Ausdrücke stets das
 gleiche. Zwei verschiedene Ausdrücke, die zum gleichen Wert auswerten,
@@ -37,13 +39,6 @@ foo x = case x of
           [] -> "salad"
           [1] -> "apple"
           (420:l) -> "pear"
-
--- linear recursion = only one recursive branch per call
--- end recursion = linear recursion + nothing to do with the result after recursive call
--- end recursion makes things memory efficient
-fak n = fakAcc n 1
-  where fakAcc n acc = if (n==0) then acc else fakAcc (n-1) (n*acc)
--- end of where is determined by indentation!
 
 -- list comprehension
 [foo x | x <- [1..420], x `mod` 2 == 0]
@@ -88,6 +83,28 @@ instance Eq Bool where
   False == True = False
 ```
 
+\End{multicols}
+
+## Idioms
+
+```haskell
+-- backtracking
+backtrack :: Conf -> [Conf]
+backtrack conf
+  | solution conf = [conf]
+  | otherwise = concat (map backtrack (filter legal (successors conf)))
+
+solutions = backtrack initial
+
+-- accumulator
+-- linear recursion = only one recursive branch per call
+-- end recursion = linear recursion + nothing to do with the result after recursive call
+-- end recursion makes things memory efficient
+fak n = fakAcc n 1
+  where fakAcc n acc = if (n==0) then acc else fakAcc (n-1) (n*acc)
+-- end of where is determined by indentation!
+```
+
 ## Important functions
 
 See extra Cheat Sheet: https://github.com/rudymatela/concise-cheat-sheets
@@ -107,16 +124,4 @@ any :: Foldable t => (a -> Bool) -> t a -> Bool
 all :: Foldable t => (a -> Bool) -> t a -> Bool
 -- reverse list
 reverse = foldl (flip (:)) []
-```
-
-## Idioms
-
-```haskell
--- backtracking
-backtrack :: Conf -> [Conf]
-backtrack conf
-  | solution conf = [conf]
-  | otherwise = concat (map backtrack (filter legal (successors conf)))
-
-solutions = backtrack initial
 ```

@@ -1,3 +1,4 @@
+\newpage
 # Lambda Calculus
 
 \Begin{multicols}{2}

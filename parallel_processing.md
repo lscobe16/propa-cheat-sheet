@@ -3,6 +3,8 @@
 \let\endlongtable\endoldlt
 \makeatother
 
+\newpage
+
 # Parallelprogrammierung
 
 **Uniform Memory access (UMA):** .
