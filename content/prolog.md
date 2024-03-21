@@ -1,3 +1,4 @@
+\newpage
 # Prolog
 
 ## Generelles Zeug
@@ -5,7 +6,7 @@ Prolog ist nicht vollständig da die nächste Regel deterministisch gewählt wir
 
 Kleingeschriebene Wörter sind Atome. Großbuchstaben sind Variablen. `_` ist Platzhalter-Variable.
 
-Prädikat heißt deterministisch gdw. stets es auf höchstens eine Weise erfüllt werden kann.
+Prädikat heißt deterministisch gdw. es stets auf höchstens eine Weise erfüllt werden kann.
 
 ```prolog
 % Prolog erfüllt Teilziele von links nach rechts
@@ -18,7 +19,10 @@ foo(X) :- subgoal1(X), subgoal2(X), subgoal3(X).
 %  - Roter Cut: beeinflusst das Programmverhalten (häufig: letzten Wächter unnötig machen)
 % Faustregel: Cut kommt, wenn wir sicher im richtigen Zweig sind, Ergebnisse danach
 foo(X, Y) :- operation_where_we_only_want_the_first_result(X, Z), !, Y = Z.
+```
 
+\Begin{multicols}{2}
+``` prolog
 % Idiom: generate and test
 foo(X, Y) :- generator(X, Y), tester(Y).
 % z.B.:
@@ -30,7 +34,10 @@ sqrt(X,Y) :- nat(Y),
 % Listen mit Cons:
 [1,2,3] = [1|[2|[3|[]]]].
 [1,2,3|[4,5,6,7]] = [1,2,3,4,5,6,7].
+```
+\columnbreak
 
+```prolog
 % === Arithmetik
 % erstmal nur Terme:
 2 - 1 \= 1.
@@ -39,6 +46,7 @@ N1 is N - 1.
 % Arithmetische Vergleiche:
 =:=, =\=, <,=<, >, >=
 ```
+\End{multicols}
 
 ## Wichtige Funktionen
 Built-In:

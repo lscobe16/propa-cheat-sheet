@@ -28,7 +28,6 @@
         - insb. Selbstapplikation im Allgemeinen nicht typisierbar
         - damit auch nicht Y-Kombinator
 
-\columnbreak
 ### Regeln
 - "$\Gamma \vdash t : \tau$": im Typkontext $\Gamma$ hat Term $t$ den Typ $\tau$
 - $\Gamma$ ordnet freien Variablen $x$ ihren Typ $\Gamma(x)$ zu
@@ -46,11 +45,12 @@ $$
 \textsc{Abs}\;\;\frac{\Gamma , x \, : \, \tau_1 \, \vdash \, t \, : \, \tau_2}{\Gamma \, \vdash \, \lambda x.\, t :\, \tau_1 \, \rightarrow \, \tau_2}
 $$
 $$
-\textsc{App}\;\;\frac{\Gamma \, \vdash \, t_1 \, : \, \tau_2 \rightarrow \tau \, \, \, \, \, \, \, \, \Gamma \, \vdash \, t_2 \, : \, \tau_2}{\Gamma \, \vdash \, t_1 \, \, t_2 \, : \, \tau}\qquad\text{h}
+\textsc{App}\;\;\frac{\Gamma \, \vdash \, t_1 \, : \, \tau_2 \rightarrow \tau \, \, \, \, \, \, \, \, \Gamma \, \vdash \, t_2 \, : \, \tau_2}{\Gamma \, \vdash \, t_1 \, \, t_2 \, : \, \tau}
 $$
 \End{multicols}
 \let\columnsep\oldColumnsep
 
+\columnbreak
 
 ### Typschema
 - "$\forall \alpha_1. \dots \forall \alpha_n.\tau$" heißt *Typschema* (Kürzel $\phi$)

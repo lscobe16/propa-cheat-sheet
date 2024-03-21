@@ -44,8 +44,8 @@ $\texttt{unify(C)}$ terminiert und gibt **mgu** für C zurück, falls C unifizie
 Resolutionsregel:
 $$
 \frac{
-    (\tau_1, \tau_2, \dots, \tau_n; \gamma) \text{ Terme plus Substitution;   }
-    \alpha :- \alpha_1, \dots, \alpha_k \text{ eine Regel;   }
+    (\tau_1, \tau_2, \dots, \tau_n; \gamma) \text{ Terme plus Substitution; }\qquad
+    \alpha :- \alpha_1, \dots, \alpha_k \text{ eine Regel; }\qquad
     \sigma \text{ mgu von } \alpha \text{ und } \gamma(\tau_1)
 }{
     (\alpha_1, \dots, \alpha_k, \tau_2, \dots, \tau_n; \sigma \circ \gamma)

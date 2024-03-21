@@ -26,7 +26,7 @@ $$
 
 **Task Parallelism:** Unterschiedliche Aufgaben werden auf den gleichen Daten ausgeführt.
 
-## Flynn's Taxanomy
+## Flynn's Taxonomy
 
 | Name | Beschreibung | Beispiel |
 |------|--------------|----------|
