@@ -16,6 +16,8 @@ foo :: (a -> (b -> (c -> d)))
 -- function applications are left associative
 foo a b c d
 ((((foo a) b) c) d)
+-- prefix notation takes precedence over infix notation
+id' l = head l : tail l
 
 -- pattern matching can use constructors and constants
 head (x:x2:xs) = x
