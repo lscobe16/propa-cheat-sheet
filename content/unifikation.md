@@ -2,28 +2,17 @@
 
 ## Unifikator
 
-- Gegeben: Menge C von Gleichungen über Terme
-- $\tau$ = Basistyp, $X$ = Var
-- Gesucht ist eine Substitution, die alle Gleichungen erfüllt: **Unifikator**
-- **most general unifier**, mgu ist der allgemeinste Unifikator
+- Gegeben: Menge $C$ von Gleichungen über Terme
+- Gesucht ist eine Substitution $\sigma$, die alle Gleichungen erfüllt: **Unifikator**
+    - $\sigma$ unifiziert Gleichung "$\theta = \theta'$", falls $\sigma\theta = \sigma\theta'$
+    - $\sigma$ unifiziert C, falls $\forall c \in C$ gilt: $\sigma$ unifiziert c
+    - Schreibweise für Substitution: $[Y \rightarrow f (a, b), D \rightarrow b, X \rightarrow g (b), Z \rightarrow b]$  
+      $\rightarrow$ soll eigentlich outline von einem Dicken Pfeil sein.
 
-### Definition Unifikator
+- **most general unifier** ist der allgemeinste Unifikator (mit den wenigsten unnötigen Ersetzungen/Annahmen)
+  - $\sigma$ ist mgu gdw. $\forall \text{ Unifikator } \gamma \ \exists \text{ Substitution } \delta : \gamma = \delta \circ \sigma$
 
-Substitution $\sigma$ unifiziert Gleichung $\theta = \theta'$, falls $\sigma\theta = \sigma\theta'$.
-
-$\sigma$ unifiziert C, falls $\forall c \in C$ gilt: $\sigma$ unifiziert c.
-
-Bsp. $C = \{f(a, D) = Y, X = g(b), g(Z) = X\} \Rightarrow \sigma = [Y \rightarrow f(a,b), D \rightarrow d, X \rightarrow g(b), Z \rightarrow b]$
-
-### Definition mgu
-
-$\sigma$ mgu, falls $\forall$ Unifikator $\gamma\ \exists$ Substitution $\delta$. $\gamma = \delta \circ \sigma$.
-
-- Unifikator mit der minimalen Menge an Substitutionen
-- Für das Beispiel: $\sigma = [Y \rightarrow f(a, D), X \rightarrow g(b), z \rightarrow b]$
-    - für $\gamma$ z. Bsp. $\delta = [D \rightarrow b]$
-
-## Unifikationsalgorithmus: $\texttt{unify(C)} =$
+## Robinson-Unifikationsalgorithmus: $\texttt{unify(C)} =$
 
 $\texttt{if C == }\emptyset\ \texttt{then []}$
 
@@ -41,5 +30,31 @@ $\;\;\;\;\;\;\;\;\texttt{then unify(C'}\cup\{\theta_l^1=\theta_r^1,...,\theta_l^
 
 $\;\;\;\;\texttt{else \textbf{fail}}$
 
+Intuitiv:
+- Nimm immer irgendeine Gleichung
+  - schon gleich $\Rightarrow$ ignorieren
+  - eine Seite Variable $\Rightarrow$ substituiere sie durch andere Seite
+  - beide Seiten gleiches, gleichstelliges Wurzelatom $\Rightarrow$ Argumente gleichsetzen
+
 $\texttt{unify(C)}$ terminiert und gibt **mgu** für C zurück, falls C unifizierbar, ansonsten **fail**.
 
+
+## Resolution
+
+Resolutionsregel:
+$$
+\frac{
+    (\tau_1, \tau_2, \dots, \tau_n; \gamma) \text{ Terme plus Substitution;   }
+    \alpha :- \alpha_1, \dots, \alpha_k \text{ eine Regel;   }
+    \sigma \text{ mgu von } \alpha \text{ und } \gamma(\tau_1)
+}{
+    (\alpha_1, \dots, \alpha_k, \tau_2, \dots, \tau_n; \sigma \circ \gamma)
+}
+$$
+
+- $\gamma$: bisherige Substitution (wird am Ende ausgegeben)
+- $P \vdash \dots$ heißt herleitbar/abarbeitbar durch logisches Programm $P$
+- $P \vDash \dots$ heißt logische Konsequenz logisches Programm $P$
+- Resolutionsregel ist korrekt: $P \vdash \tau_1, \dots, \tau_n \Rightarrow P \vDash \tau_1, \dots, \tau_n$
+- Resolutionsregel ist vollständig: $P \vDash \tau_1, \dots, \tau_n \Rightarrow P \vdash \tau_1, \dots, \tau_n$
+- Prolog ist korrekt, aber nicht vollständig (wegen deterministischer Regelwahl)

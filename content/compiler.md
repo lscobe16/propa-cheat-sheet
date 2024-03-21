@@ -34,6 +34,10 @@
 - Linksrekursive kontextfreie Grammatiken sind für kein k SLL(k).
 - Für jede kontextfreie Grammatik $G$ mit linksrekursiven Produktionen gibt es eine kontextfreie Grammatik $G'$ ohne Linksrekursion mit $L(G) = L(G')$
 
+## Grammatiken
+
+<!-- TODO: First, Follow, Anleitung etc. -->
+
 ## Java Bytecode
 
 ### General
