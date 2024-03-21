@@ -64,6 +64,25 @@ $$
 \textsc{Let}\;\;\frac{\Gamma \, \vdash \,t_1 \, : \, \tau_1 \; \; \; \; \; \Gamma , x \, : \, ta\,(\tau_1, \, \Gamma) \, \vdash \, t_2 \, : \, \tau_2}{\Gamma \, \vdash \, \textbf{\texttt{let}} \; x \, = \, t_1 \; \textbf{\texttt{in}} \; t_2 \, : \tau_2}
 $$
 - $ta\,(\tau,\,\Gamma)$: Typabstraktion
-    - Alle freien Typvariablen von $\tau$ quantifiziert, die nicht frei in Typannahmen von $\Gamma$, also alle "wirklich unbekannten" (auch global)
+    - Alle freien Typvariablen von $\tau$, die nicht frei in Typannahmen von $\Gamma$ vorkommen, werden allquantifiziert;
+      also alle "wirklich unbekannten" (auch global)
+
+### Typinferenz
+
+Gegeben: Term $t$ und Typannahmen $\Gamma$  
+Gesucht: Lösung $(\sigma, \tau)$, sodass $\sigma\Gamma \vdash t\;:\;\tau$
+
+1. Erstelle Herleitungsbaum anhand syntaktischer Struktur und Typisierungsregeln; dabei:
+   - verwende zunächst überall rechts von : frische Typvariablen $\alpha_i$
+   - extrahiere Gleichungssystem $C$ für die $\alpha_i$ gemäß Regeln
+2. Bestimme mgu $\sigma$ von $C$
+3. Lösung: $(\sigma, \sigma(\alpha_1))$, wobei $\alpha_1$ erste Typvariablen für $t$
+
+Bei \textsc{Let}:
+
+1. Sammle Gleichungen aus linkem Teilbaum in $C_{let}$
+2. Berechne $\sigma_{let}$ von $C_{let}$
+3. $\Gamma' := \sigma_{let}, x: ta(\sigma_{let}(\alpha_i), \sigma_{let}(\Gamma))$
+4. Benutze $\Gamma'$ im rechten Teilbaum
 
 \End{multicols}
