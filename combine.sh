@@ -8,4 +8,4 @@ cat parallel_processing.md >> full.md
 cat java.md >> full.md
 cat compiler.md >> full.md
 
-pandoc -H preamble.tex -o full.pdf -f markdown --toc full.md
+pandoc -H preamble.tex -o full.pdf -f markdown --toc --toc-depth=1 full.md
