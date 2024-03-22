@@ -1,108 +1,194 @@
 # Compiler
 
-## Basics
-- **Lexikalische Analyse:**
+\Begin{multicols}{2}
+- **Lexikalische Analyse (Lexing)**
   - Eingabe: Sequenz von Zeichen
   - Aufgaben:
-    - erkenne bedeutungstragende Zeichengruppen: Tokens
-    - überspringe unwichtige Zeichen (Leerzeichen, Kommentare, ...)
-    - bezeichner identifizieren und zusammenfassen in Stringtabelle
-  - Ausgabe: Sequenz von Tokens
+    - erkenne Tokens = bedeutungstragende Zeichengruppen
+    - überspringe unwichtige Zeichen (Whitespace, Kommentare)
+    - Bezeichner identifizieren und zusammenfassen in Stringtabelle
+  - Ausgabe: Sequenz von Tokens und Stringtabelle
 
-- **Syntaktische Analyse:**
+- **Syntaktische Analyse (Parsing)**
   - Eingabe: Sequenz von Tokens
   - Aufgaben:
-    - überprüfe, ob Eingabe zu kontexfreier Sprache gehört
-    - erkenne hierachische Struktur der Eingabe
+    - überprüfe, ob Eingabe zu kontextfreier Sprache gehört
+    - erkenne hierarchische Struktur der Eingabe
   - Ausgabe: Abstrakter Syntaxbaum (AST)
 
-- **Semantische Analyse:**
-  - Eingabe: Syntax Baum
+\columnbreak
+- **Semantische Analyse**
+  - Eingabe: Syntaxbaum
   - Aufgaben: kontextsensitive Analyse (syntaktische Analyse ist kontextfrei)
     - Namensanalyse: Beziehung zwischen Deklaration und Verwendung
     - Typanalyse: Bestimme und prüfe Typen von Variablen, Funktionen, ...
     - Konsistenzprüfung: Alle Einschränkungen der Programmiersprache eingehalten
-  - Ausgabe: Attributierter Syntaxbaum
-  - ungültige Programme werden spätestens in Semantischer Analyse abgelehnt
+  - Ausgabe: attributierter Syntaxbaum (Pfeile von Verwendung zu Definition)
+  - Ungültige Programme werden spätestens in Semantischer Analyse abgelehnt
 
-- **Codegenerierung:**
+- **Zwischencodegenerierung, Optimierung**
+
+- **Codegenerierung**
   - Eingabe: Attributierter Syntaxbaum oder Zwischencode
-  - Aufgaben: Erzeuge Code für Zielmaschine
+  - Aufgaben: Erzeuge Code für Zielmaschine (Maschinenbefehle wählen, Scheduling, Registerallokation, Nachoptimierung)
   - Ausgabe: Program in Assembler oder Maschinencode
 
-## Linksrekursion
-- Linksrekursive kontextfreie Grammatiken sind für kein k SLL(k).
-- Für jede kontextfreie Grammatik $G$ mit linksrekursiven Produktionen gibt es eine kontextfreie Grammatik $G'$ ohne Linksrekursion mit $L(G) = L(G')$
+\End{multicols}
 
 ## Grammatiken
 
-<!-- TODO: First, Follow, Anleitung etc. -->
+### Eigenschaften
+Links- / Rechtsableitung: linkestes / rechtestes Nichtterminal wird zuerst weiterverarbeitet  
+Links- / rechtsrekursiv: Rekursion nur am linken / rechten Ende von rechter Seite von Produktionen  
+Eindeutig: für jedes Wort existiert nur eine Ableitungsbaum  
+Konkreter Syntaxbaum (CST) = Ableitungsbaum (jedes Zeichen ein eigener Knoten, alle Terminale sind Blätter)
 
+### Konstruktion
+
+- Operator precedence: Ein Nichtterminal pro Level, schwächer bindende bilden auf stärker bindende ab, Klammern am Ende
+  - Bsp: $P = \{E \to T, T \to F, T \to T * F, E \to E + T, F \to id, F \to ( E )\}$
+- Linksassoziativ durch Linksrekursion: $E \to E + T$, Rechtsassoziativ durch Rechtsrekursion: $E \to T + E$
+- Nicht zweimal das gleiche Nichtterminal in einem Ersetzungsstring
+- Linksfaktorisierung: gleiche Präfixe von auslagern $\Rightarrow$ rechte Seiten zu einem Nichtterminal präfixfrei
+
+### Parsing
+
+- LL: Parser liest einmal von Links nach rechts und baut Linksableitung auf (top-down, recursive decent)
+- LR: Parser liest einmal von Links nach rechts und baut Rinksableitung auf (bottom-up)
+- SLL(k) / SLR(k): vorherige Zeichen nicht relevant, $k$ langer Lookahead
+
+Für $\chi \in (\Sigma \cup V)^*$:  
+$\text{First}_k(\chi) = \{\beta \mid \exists \tau \in \Sigma^* : \chi \Rightarrow^* \tau \land \beta = \tau[..k]\} =$
+k-Anfänge der Strings, die aus $\chi$ generiert werden können = Indizmenge  
+$\text{Follow}_k = \{\beta \mid \exists \alpha, \omega \in (\Sigma \cup V)^* \text{ mit } S \Rightarrow^* \alpha \chi \omega \land \beta \in \text{First}_k(\omega)\} =$
+k-Anfänge der Strings, die __hinter__ $\chi$ generiert werden können  
+<!-- TODO: Tricks (nach Altklausuren) -->
+
+- Kontextfreie Grammatik ist SLL($k$) gdw. für alle Produktionen eines Nichtterminals $A \to \alpha$ die Mengen $\text{First}_k(\alpha \text{Follow}_k(A))$ unterschiedlich sind.
+  - $k = 1, \alpha \not\Rightarrow^* \varepsilon, \beta \not\Rightarrow^* \varepsilon$: genügt, wenn $\text{First}(\alpha) \cap \text{First}(\beta) = \emptyset$
+  - $k = 1, \alpha     \Rightarrow^* \varepsilon, \beta \not\Rightarrow^* \varepsilon$: genügt, wenn $\text{Follow}(A)     \cap \text{First}(\beta) = \emptyset$
+- Linksrekursive kontextfreie Grammatiken sind für kein $k$ SLL($k$).
+- Für jede kontextfreie Grammatik $G$ mit linksrekursiven Produktionen gibt es eine kontextfreie Grammatik $G'$ ohne Linksrekursion mit $L(G) = L(G')$
+- Nutze $\{T \to F \mid T * F\} \leadsto \{T \to F\ \ T\!List,\ T\!List \to \varepsilon \mid *\ \ F\ \ T\!List\}$ und Linksfaktorisierung
+
+### Recursive Decent
+
+\Begin{multicols}{2}
+Eine `parse`-Funktion pro Nichtterminal, konsumieren ihren Teil der Eingabe.
+Erzeugt automatisch Linksableitung.
+
+```java
+void main() {
+  lexer.lex(); // lexer.current ist nun das 1. Token
+  Expr ast = parseE(); // E ist das Startsymbol
+}
+void expect(TokenType e) {
+  if (lexer.current == e) lexer.lex();
+  else error("Expected ", e, 
+             " but got ", lexer.current);
+}
+Expr parseF() {
+  if (lexer.current==TokenType.ID) { // F -> id
+    expect(TokenType.ID)
+  } else { // F -> (E)
+    expect(TokenType.LP);
+    Expr res = parseE();
+    expect(TokenType.RP);
+    return res
+  }
+}
+```
+\columnbreak
+```java
+Expr parseTList(Expr left) { // T -> F([*/]F)*
+  Expr res = left;
+  switch (lexer.current) {
+    case STAR: // TLIST -> * F TList
+      expect(TokenType.STAR);
+      res = new Mult(res, parseF());
+      return parseTList(res);
+    case SLASH: // TList -> / F TList
+      expect(TokenType.SLASH);
+      res = new Div(res, parseF());
+      return parseTList(res);
+    case PLUS: case MINUS: case R_PAREN: case EOF:
+      // TList -> epsilon
+      return res;
+    default:
+      error("Expected one of */+-)# but got ", 
+            lexer.current);
+  }
+}
+// Endrekursion kann man zu while-Schleife ausrollen
+// rRest analog
+```
+\End{multicols}
+
+<!-- Semantische Analyse scheint nicht relevant zu sein -->
+
+<!-- \pagebreak -->
 ## Java Bytecode
+
+<!-- TODO: drüber gucken, auf 2 Seiten kriegen -->
 
 ### General
 
 ```nasm
-; this list partly is stolen from some guy on discord, but I forgot which one
-; types
-i -> int
-l -> long
-s -> short
-b -> byte
-c -> char
-f -> float
-d -> double
-a -> reference
+; types are labeled by their first letter
+int, long, short, byte=boolean, char, float, double, a -> reference
 
+; always push left argument first and then right argument!
+
+```
+\Begin{multicols}{2}
+```nasm
 ; load constants on the stack
 aconst_null ; null object
-dconst_0 ; double 0
-dconst_1 ; double 1
-fconst_0 ... fconst_2 ; float 0 to 2
-iconst_0 ... iconst_5 ; integer 0 to 5
+dconst_0, donst_1 ; double value 0/1
+fconst_0, fconst_1, fconst_2 ; float value 0/1/2
+iconst_0 ... iconst_5 ; integer values 0 .. 5
+iconst_m1 ; integer value -1
 
 ; push immediates
 bipush i ; push signed byte i on the stack
 sipush i ; push signed short i on the stack
 
-; variables (X should be replaced by a type, for example i (integer))
-; there exists Xload_i for i in [0, 3] to save a few bytes
+; load/store variable with index i of type X
+Xload_i ; for i in [0, 3] to save a few bytes
 Xload i ; load local variable i (is a number)
 Xstore i ; store local variable i
 
-; return from function
-return ; void return
+; Methods
+invokevirtual #2; call function, #2 -> Konstantenpool
+return ; return void
 Xreturn ; return value of type X
 
-; conditional jumps
-if_icmpeq label ; jump if ints are equal
-if_icmpge label ; jump if first int is >=
-if_icmpgt label ; jump if first int is >
-if_icmple label ; jump if first int is <=
-if_icmplt label ; jump if first int is <
+; Jumps
+goto label ; unconditionally jump to label
 
-ifeq label ; jump if = zero
-ifge label ; jump if >= zero
-ifgt label ; jump if > zero
-iflt label ; jump if < zero
-ifle label ; jump if <= zero
-ifne label ; jump if != zero
+; 2-conditional: pop and look (secondtop ? top)
+; for ints:
+if_icmpeq, if_icmpge, if_icmpgt, if_icmple, if_icmplt
+if_acmpeq label ; jump if refs are equal
+if_acmpne label ; jump if refs are different
 
-ifnull label ; jump if null
-ifnonnull label ; jump if not null
+; 1-conditional: pop and look at top
+; ints:
+ifeq, ifge, ifgt, iflt, ifle, ifne
+ifnull label ; jump if reference is null
+ifnonnull label ; jump if reference is not null
 
-; Arithmetic, always operates on stack
-; push left side first, then right side
-iinc var const ; increment variable var (number) by const (immediate)
-isub ; Integer subtraction, for stack top -> [1,2,3] it would be 2 - 1
+; Arithmetic
+iinc i const ; increment int variable i by const
 iadd ; Integer addition
+isub ; Integer subtraction (secondtop - top)
 imul ; Integer multiplication
-idiv ; Integer division
+idiv ; Integer division (secondtop / top)
 ineg ; negate int
-ishl ; shift left (arith)
-ishr ; shift right (arith)
+ishl ; shift left (secondtop >> top)
+ishr ; shift right (secondtop << top)
 
-; Logic (für [i, l])
+; Logic (i in [i, l])
 iand ; Bitwise and
 ior ; Bitwise or
 ixor ; Bitwise or
@@ -118,41 +204,39 @@ nop ; No operation
 
 ; Arrays
 newarray T ; new array of type T
-Xaload ; load type X from array [Stack: arr, index] <‐
-Xastore ; store type X in array [Stack: arr, index, val] <‐
+Xaload ; load type X from array [arr, index] -> [value]
+Xastore ; store type X in array [arr, index, val] -> []
 arraylength ; length of array
 ```
+\End{multicols}
 
 ### Examples
 
 #### Arithmetic
 
-**Java:**
-
+\Begin{multicols}{2}
 ```java
 void calc(int x, int y) {
   int z = 4;
   z = y * z + x;
 }
 ```
-
-**Bytecode:**
-
+\columnbreak
 ```nasm
-iconst_4 // lege eine 4 auf den stack
-istore_3 // pop stack und speichere Wert in Variable 3 (z)
-iload_2 // lade Variable 2 (y) und lege sie auf den stack
-iload_3 // lade Variable 3 (z) und lege sie auf den stack
-imul // multipliziere die oberen zwei elemente und lege das ergebnis auf den stack (y * z)
-iload_1 // lade Variable 1 (x) und lege sie auf den Stack
-iadd // addiere die oberen zwei Elemente und lege sie auf den stack
-istore_1 // pop stack und speichere Wert in Variable 3 (z)
+iconst_4
+istore_3
+iload_2
+iload_3
+imul
+iload_1
+iadd
+istore_1
 ```
+\End{multicols}
 
 #### Loops
 
-**Java:**
-
+\Begin{multicols}{2}
 ```java
 public int fib(int steps) {
   int last0 = 1;
@@ -164,29 +248,44 @@ public int fib(int steps) {
   }
 }
 ```
-
-**Bytecode:**
-
+\columnbreak
 ```nasm
-  iconst_1 // put 1 on stack
-  istore_2 // store top of stack in var 2
-  iconst_1 // put 1 on stack
-  istore_3 // store top of stack in var 3
+  iconst_1
+  istore_2
+  iconst_1
+  istore_3
 
-loop_begin: // label
-  iinc 1 -1 // increment var 1 by -1
-  iload_1 // load var 1 and put on stack
-  ifle after_loop // if top of stack <= 0, jump to after_loop
-  iload_2 // put var 2 on stack
-  iload_3 // put bar 3 on stack
-  iadd // add top two elements and put on stack
-  istore 4 // store top of stack in var 4
-  iload_2 // load var 2 and put on stack
-  istore_3 // store top of stack in var 3
-  iload 4 // load var 4 and put on stack
-  istore_2 // store top of stack in var 2
-  goto loop_begin // jump to loop_begin
-after_loop: // label
-  iload_2 // load var 2 and put on stack
-  ireturn // return top of stack
+loop_begin:
+  iinc 1 -1
+  iload_1
+  ; if top of stack <= 0, jump to after_loop
+  ifle after_loop
+  iload_2
+  iload_3
+  iadd
+  istore 4
+  iload_2
+  istore_3
+  iload 4
+  istore_2
+  goto loop_begin
+after_loop:
+  iload_2
+  ireturn
 ```
+\End{multicols}
+
+#### Method Call
+
+\Begin{multicols}{2}
+```java
+foo(42)
+```
+\columnbreak
+```nasm
+aload_0 ; load this
+bipush 42 ; load aruments 
+invokevirtual #2
+; return value is on stack
+```
+\End{multicols}
