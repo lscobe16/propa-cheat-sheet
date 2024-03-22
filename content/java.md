@@ -1,144 +1,181 @@
+\newpage
+
 # Java
-
-## Multithreading
-### Race conditions
-A race condition exists if the order in which threads execute thei operations influences the result of the program.
-
-#### Mutual Exclusion
-A code section, of which only one thread is allowed to execute operations at a time, is called a critical section.
-If one thread exectues operations of a critical section, other threads will be blocked if they want to enter it as well.
-
-```java
-// Synchronized block, someObject is used as the monitor
-synchronized(someObject) {
-  ...
-}
-
-// synchronized function
-synchronized void foo() {
-  ...
-}
-```
-
-### Caching and code reordering
-
-- cached variables can lead to inconsistency
-- code can be reordered by the compiler
-
-#### `volatile`-keyword
-
-`volatile` ensures that changes to variables are immediately visible to all threads/processors.
-
-- establishes a happens-before relationship
-- values are not locally cached in a CPU cache
-- no optimization by compiler
-
-```java
-// declares a volatile variable
-volatile int c = 420;
-```
 
 ## Functional programming
 
+\vspace{-2em}
+\Begin{multicols}{2}
 ```java
-// lambdas
-(int i, int j) -> i + j;
 
-// functional interfaces
 @FunctionalInterface
 interface Predicate {
   boolean check(int value);
 }
 
-public int sum(List<Integer> values, Predicate predicate) {
-  ...
-};
-
-sum(values, i -> i > 5);
-
+// lambda
+(int i, int j) -> i + j;
 // method reference to static function
 SomeClass::staticFunction;
 // method reference to object function
 someObject::function;
 ```
+\End{multicols}
 
-## Executors
-
-- Executors abstract from thread creation.
-- provides an execute method that accepts a `Runnable`
-  ```java
-  void execute(Runnable runnable);
-  ```
-- `ExecutorService` is an interface that provides further lifecycle management logic
-
-```java
-Callable<Integer> myCallable = () -> { return currentValue; };
-Future<Integer> myFuture = executorService.submit(myCallable);
-```
-
+\vspace{-2em}
 ## Streams
 
-Provides functions like
+Use `Collection.stream()` or `Collection.parallelStream()` to obtain a stream.  
+Methods: `filter`, `map`, `mapToInt`, `reduce`, `findAny`, `findFirst`, `min`, `max`, `average`, `limit`, `skip`, `distinct`, `sorted`, `toList`
 
-- `filter`
-- `map, reduce`
-- `collect`
-- `findAny`, `findFirst`
-- `min`, `max`
-
-Any Java collection can be treated as a stream by calling the `stream()` method
-
-### Example
 ```java
-List<Person> personsInAuditorum = ...;
-double average =
-  personsInAuditorum
-  .stream()
-  .filter(Person::isStudent)
-  .mapToInt(Person::getAge) // converts a regular Stream to IntStream
-  .average()
-  .getAsDouble();
-
-// collector
-R collect(
-  Supplier<R> supplier,
-  BiConsumer<R, ? super T> accumulator,
-  BiConsumer<R, R> combiner // only used for parallel streams
-);
-
 personsInAuditorum.stream().collect(
-  () -> 0,
-  (currentSum, person) -> { currentSum += person.getAge(); }.
-  (leftSum, rightSum) -> { leftSum += rightSum; }
+  () -> 0, // supplier of neutral value
+  (currentSum, person) -> { currentSum += person.getAge(); } // accumulator of acc and elem
+  (leftSum, rightSum) -> { leftSum += rightSum; } // combiner of multiple accs (for parallel)
 );
-
-
-// parallel stream
-someValues.parallelStream();
 ```
+
+## Multithreading
+### Race conditions
+A race condition exists if the order in which threads execute their operations influences the result of the program.
+
+### Mutual Exclusion
+A code section that only one thread is allowed to execute at a time is called a critical section.
+If one thread executes operations of a critical section, other threads will be blocked if they want to enter it as well.
+$\Rightarrow$ only one thread per monitor is allowed to be in the section, but it may be multiple times (recursion).
+Test using `Thread.holdsLock(Object obj)`.
+
+\Begin{multicols}{2}
+```java
+// synchronized block, someObject is used as monitor
+synchronized(someObject) {
+  ...
+}
+// synchronized method, this is used as monitor
+synchronized void foo() {
+  ...
+}
+```
+\End{multicols}
+
+### `wait` and `notify`
+
+```java
+// put this thread to sleep (always use in while loop!)
+public final void wait() throws InterruptedException;
+// put this thread to sleep, be ready again in timeout milliseconds
+public final void wait(long timeout) throws InterruptedException;
+// make ANY other sleeping thread ready (never use!)
+public final void notify();
+// make ALL other sleeping threads ready
+public final void notifyAll();
+// interrupt thread (signal is not lost, if it is not currently waiting)
+Thread t;
+t.interrupt();
+// make sure to catch InterruptedException and cease work in that thread!
+```
+
+<!-- ### Java Thread Lifecycle
+![](image.png){ width=50% } -->
+
+### Happens-before Relation
+
+If t1 "happens before" t2, it is guaranteed that potential side effects of t1 are visible to t2.
+
+Rules that create "happens-before"-relationship:
+
+- same thread + data dependency
+- statements in parent thread before `Thread.start` -> statements in the thread
+- statements in the thread -> statements in the parent thread after `Thread.join`
+- between synchronized blocks of the same monitor
+- write to a volatile variable -> every subsequent read to that variable
+
+#### `volatile`
+\Begin{multicols}{2}
+- ensures that changes to variables are immediately visible to all threads/processors
+- establishes a happens-before relationship
+- values are not locally cached in a CPU cache
+- no optimization by compiler
+
+\columnbreak
+```java
+// declare a volatile variable
+volatile int c = 420;
+```
+\End{multicols}
+
+### Executors
+
+- Executors abstract from thread creation
+- provide method `execute` that runs a `Runnable` in a thread according to strategy
+- `ExecutorService` is an interface that provides further lifecycle management logic (e.g. `Future`s):
+
+```java
+ExecutorService executor = Executors.newCachedThreadPool();
+Callable<Integer> myCallable = () -> { return 42; };
+Future<Integer> myFuture = executor.submit(myCallable);
+int x = myFuture.get();
+int x = myFuture.get(1, TimeUnit.SECONDS); // may throw TimeoutException
+```
+
+### Atomic
+
+\Begin{multicols}{2}
+Atomic operations are either executed completely or not at all. Atomic operations:
+
+- reads and writes of reference variables
+- reads and writes of 32-bit primitives
+- reads and writes of all variables using `volatile`
+- NOT: `i++`, `x=y+1`
+
+\columnbreak
+```java
+class AtomicInteger {
+  int get()
+  int incrementAndGet()
+  int decrementAndGet()
+  boolean compareAndSet(int oldValue, int newValue)
+  // more like tryReplace, result iff successful
+}
+```
+\End{multicols}
+
+<!-- Akka is not relevant this year -->
 
 ## Design by Contract
 Form of a Hoare triple $\{P\}\ C\ \{Q\}$
 
-- $P$: precondition $\rightarrow$ specification what the supplier expects from the client
+- $P$: precondition $\rightarrow$ specification what the supplier can expect from the client
 - $C$: series of statements $\rightarrow$ the method of body
 - $Q$: postcondition $\rightarrow$ specification of what the client can expect from the supplier if the precondition is fulfilled
-
-
-- client has to ensure that the precondition is fulfilled
-- client can expect the postcondition to be fulfilled, if the precondition is
 - **Non-Redundancy-Principle:** the body of a routine shall not test for the routine's precondition
+- **Precondition Availability:** precondition should be understandable by every client
+- **Assertion Violation Rule:** a runtime assertion violation is the manifestation of a bug in the software
 
 ```java
-/*@ requires size > 0;
-  @ ensures size == \old(size) - 1;
-  @ ensures \result == \old{top()};
-  @ ensures true; // trivial constraint
-  @*/
-Object pop() { ... }
+class Stack {
+  //@ invariant size >= 0
+
+  /*@ requires size > 0;
+    @ ensures size == \old(size) - 1;
+    @ ensures \result == \old(top());
+    @ ensures (\forall int i; 0 <= i && i < size; \old(elements[i]) == elements[i]);
+    @ assignable size; // redundant
+    @ signals (IllegalOperationException ioEx) size == 0; // redundant
+    @*/
+  Object pop() { ... }
+
+  // also: ==>, <==>, <=!=>, \exists, @ pure
+  /*@ nullable @*/ /*@ pure @*/ Object top() { ... }
+}
 ```
 
 ### Liskov Substitution Principle
+
+Guarantees may strengthen, requirements may weaken.
+
 - preconditions must not be more restrictive than those of the overwritten method: $\texttt{Precondition}_{Super} \Rightarrow \texttt{Precondition}_{Sub}$
 - postcondition must be at least as restrictive as thos of the overwritten methods: $\texttt{Postcondition}_{Sub} \Rightarrow \texttt{Postcondition}_{Super}$
+- class invariants must be at least as restrictive as those of the superclass: $\texttt{Invariants}_{Sub} \Rightarrow \texttt{Invariants}_{Super}$
 
