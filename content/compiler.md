@@ -126,56 +126,12 @@ Expr parseTList(Expr left) { // T -> F([*/]F)*
 
 <!-- Semantische Analyse scheint nicht relevant zu sein -->
 
-<!-- \pagebreak -->
 ## Java Bytecode
 
 ### Examples
 
-#### Loops
-
 \Begin{multicols}{2}
-```java
-public int fib(int steps) {
-  int last0 = 1;
-  int last1 = 1;
-  while (--steps > 0) {
-    int t = last0 + last1;
-    last1 = last0;
-    last0 = t;
-  }
-}
-```
-\columnbreak
-```nasm
-  iconst_1
-  istore_2
-  iconst_1
-  istore_3
-
-loop_begin:
-  iinc 1 -1
-  iload_1
-  ; if top of stack <= 0, jump to after_loop
-  ifle after_loop
-  iload_2
-  iload_3
-  iadd
-  istore 4
-  iload_2
-  istore_3
-  iload 4
-  istore_2
-  goto loop_begin
-after_loop:
-  iload_2
-  ireturn
-```
-\End{multicols}
-
-\pagebreak
 #### Arithmetic
-
-\Begin{multicols}{2}
 ```java
 void calc(int x, int y) {
   int z = 4;
@@ -195,9 +151,57 @@ istore_1
 ```
 \End{multicols}
 
-#### Method Call
+\Begin{multicols}{2}
+#### Object Creation
+```java
+class Test {
+  Test foo() {
+    return new Test();
+  }
+}
+```
+\columnbreak
+```nasm
+Test();
+    aload_0
+    invokespecial #1;
+    return
+Test foo();
+    new #2;
+    dup
+    invokespecial #3;
+    areturn
+```
+\End{multicols}
 
 \Begin{multicols}{2}
+#### Fields
+```java
+class Foo {
+  public Bar field;
+  public void setNull() {
+    field = null;
+  }
+}
+```
+\columnbreak
+```nasm
+setNull();
+  aload 0 // Parameter 0 (this) auf Stack
+  aconst null // null−Referenz auf den Stack
+  putfield Foo.field:LBar; // Schreibe Wert (null)
+  // in Feld Foo.field von Objekt (this)
+  return
+```
+\End{multicols}
+
+\pagebreak
+#### Loops
+
+`while`-Loop: Label, expression, conditional jump out, body, goto label
+
+\Begin{multicols}{2}
+#### Method Call
 ```java
 foo(42)
 ```
