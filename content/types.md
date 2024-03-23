@@ -50,6 +50,9 @@ $$
 \End{multicols}
 \let\columnsep\oldColumnsep
 
+Constraints:  
+![](image-2.png){ width=30% }
+
 \columnbreak
 
 ### Typschema

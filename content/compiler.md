@@ -117,10 +117,11 @@ Expr parseTList(Expr left) { // T -> F([*/]F)*
     default:
       error("Expected one of */+-)# but got ", 
             lexer.current);
+      return null;
   }
 }
 // Endrekursion kann man zu while-Schleife ausrollen
-// rRest analog
+// Rest analog
 ```
 \End{multicols}
 
@@ -174,6 +175,7 @@ Test foo();
 ```
 \End{multicols}
 
+\pagebreak
 \Begin{multicols}{2}
 #### Fields
 ```java
@@ -187,15 +189,14 @@ class Foo {
 \columnbreak
 ```nasm
 setNull();
-  aload 0 // Parameter 0 (this) auf Stack
-  aconst null // null−Referenz auf den Stack
-  putfield Foo.field:LBar; // Schreibe Wert (null)
-  // in Feld Foo.field von Objekt (this)
+  aload 0 ; Parameter 0 (this) auf Stack
+  aconst null ; null auf den Stack
+  putfield Foo.field:LBar; ; Schreibe Wert (null)
+  ; in Feld Foo.field von Objekt (this)
   return
 ```
 \End{multicols}
 
-\pagebreak
 #### Loops
 
 `while`-Loop: Label, expression, conditional jump out, body, goto label

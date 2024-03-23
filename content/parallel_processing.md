@@ -199,7 +199,7 @@ int MPI_Alltoall(void *sendbuf, int sendcount, MPI_Datatype sendtype,
                  void *recvbuf, int recvcount, MPI_Datatype recvtype,
                  MPI_Comm comm)
 ```
-(like matrix transposing)
+(like matrix transposing, `sendcount` = `recvcount` = size of one cell of the matrix = usually 1)
 $$
 \begin{bmatrix}
 A_0 & A_1 & A_2 \\

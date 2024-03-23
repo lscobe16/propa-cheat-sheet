@@ -38,7 +38,8 @@ personsInAuditorum.stream().collect(
 
 ## Multithreading
 ### Race conditions
-A race condition exists if the order in which threads execute their operations influences the result of the program.
+A race condition exists if the order in which threads execute their operations influences the result of the program.  
+Are precluded by synchronization and by atomicity.
 
 ### Mutual Exclusion
 A code section that only one thread is allowed to execute at a time is called a critical section.
@@ -58,6 +59,15 @@ synchronized void foo() {
 }
 ```
 \End{multicols}
+
+### Deadlock
+
+A deadlock can occur iff all Coffman conditions hold:
+
+- Mutual exclusion: unshareable resources (given in Java)
+- Hold and wait: a thread holds a resrouce and requests access to another one
+- No preemption: resources can only be released by their holder (given in Java)
+- Circular wait: circular dependency between thread that all hold and request a resource
 
 ### `wait` and `notify`
 
