@@ -114,8 +114,8 @@ fak n = fakAcc n 1
 
 See extra Cheat Sheet: https://github.com/rudymatela/concise-cheat-sheets
 
-`foldr` can handle infinite lists (streams) if combinator does sometimes not depend on right rest. `foldl` cannot.
-Result is a list => probably want to use foldr
+`foldr` can handle infinite lists (streams) if combinator does sometimes not depend on right rest. `foldl` cannot.  
+Result is a list $\Rightarrow$ probably want to use foldr
 
 <!-- TODO Verweise auf anderes Cheatsheet schreiben? -->
 Additional built-ins:
