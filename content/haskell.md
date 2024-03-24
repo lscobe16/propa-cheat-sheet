@@ -53,6 +53,9 @@ g :: b -> c
 
 h :: a -> c
 h = f . g
+-- is the same as
+h x = f $ g x  
+-- $ puts parens around everything right
 
 -- type alias
 type Car = (String,Int)
@@ -62,7 +65,7 @@ data Tree a = Leaf
               | Node (Tree a) a (Tree a)
               deriving (Show)
 
--- defines interfac
+-- defines interface
 class Eq t where
   (==) :: t -> t -> Bool
   (/=) :: t -> t -> Bool
@@ -94,7 +97,7 @@ instance Eq Bool where
 backtrack :: Conf -> [Conf]
 backtrack conf
   | solution conf = [conf]
-  | otherwise = concat (map backtrack (filter legal (successors conf)))
+  | otherwise = concat $ map backtrack $ filter legal $ successors conf
 
 solutions = backtrack initial
 
@@ -114,7 +117,8 @@ See extra Cheat Sheet: https://github.com/rudymatela/concise-cheat-sheets
 `foldr` can handle infinite lists (streams) if combinator does sometimes not depend on right rest. `foldl` cannot.
 Result is a list => probably want to use foldr
 
-Additional functions (maybe handwrite on other cheatsheet):
+<!-- TODO Verweise auf anderes Cheatsheet schreiben? -->
+Additional built-ins:
 ```haskell
 -- in a list of type [(key, value)]  returns first element where key matches given value
 lookup :: Eq a => a -> [(a, b)] -> Maybe b
@@ -124,6 +128,21 @@ until :: (a -> Bool) -> (a -> a) -> a -> a
 any :: Foldable t => (a -> Bool) -> t a -> Bool
 -- return true if the predicate is true for all elements
 all :: Foldable t => (a -> Bool) -> t a -> Bool
--- reverse list
+-- return sorted copy of list
+import Data.List (sort)
+sort :: Ord a => [a] -> [a]
+```
+Custom implementations:
+```haskell
+-- quicksort
+qsort :: (Ord t) => [t] -> [t]
+qsort [] = []
+qsort (p:ps) = qsort (filter (<= p) ps) ++ p:qsort (filter (> p) ps)
+-- remove consecutive duplicates (strong with sort)
+uniq :: Eq a => [a] -> [a]
+uniq [] = []
+uniq (x:y:xs) | x == y = x:uniq xs
+uniq (x:xs) = x:uniq xs
+-- reverse list using fold
 reverse = foldl (flip (:)) []
 ```
