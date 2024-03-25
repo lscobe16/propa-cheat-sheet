@@ -59,12 +59,12 @@ Konkreter Syntaxbaum (CST) = Ableitungsbaum (jedes Zeichen ein eigener Knoten, a
 
 Für $\chi \in (\Sigma \cup V)^*$:  
 $\text{First}_k(\chi) = \{\beta \mid \exists \tau \in \Sigma^* : \chi \Rightarrow^* \tau \land \beta = \tau[..k]\} =$
-k-Anfänge der Strings, die aus $\chi$ generiert werden können = Indizmenge  
+k-Anfänge der Strings, die aus $\chi$ generiert werden können  
 $\text{Follow}_k = \{\beta \mid \exists \alpha, \omega \in (\Sigma \cup V)^* \text{ mit } S \Rightarrow^* \alpha \chi \omega \land \beta \in \text{First}_k(\omega)\} =$
 k-Anfänge der Strings, die __hinter__ $\chi$ generiert werden können  
 <!-- TODO: Tricks (nach Altklausuren) -->
 
-- Kontextfreie Grammatik ist SLL($k$) gdw. für alle Produktionen eines Nichtterminals $A \to \alpha$ die Mengen $\text{First}_k(\alpha \text{Follow}_k(A))$ unterschiedlich sind.
+- Kontextfreie Grammatik ist SLL($k$) gdw. für alle Produktionen eines Nichtterminals $A \to \alpha$ die Mengen $\text{First}_k(\alpha \text{Follow}_k(A))$ (**Indizmengen**) unterschiedlich sind.
   - $k = 1, \alpha \not\Rightarrow^* \varepsilon, \beta \not\Rightarrow^* \varepsilon$: genügt, wenn $\text{First}(\alpha) \cap \text{First}(\beta) = \emptyset$
   - $k = 1, \alpha     \Rightarrow^* \varepsilon, \beta \not\Rightarrow^* \varepsilon$: genügt, wenn $\text{Follow}(A)     \cap \text{First}(\beta) = \emptyset$
 - Linksrekursive kontextfreie Grammatiken sind für kein $k$ SLL($k$).
@@ -89,8 +89,8 @@ void expect(TokenType e) {
 }
 Expr parseF() {
   if (lexer.current==TokenType.ID) { // F -> id
-    expect(TokenType.ID)
-  } else { // F -> (E)
+    expect(TokenType.ID) // only consume if in grammar
+  } else { // F -> ( E )
     expect(TokenType.LP);
     Expr res = parseE();
     expect(TokenType.RP);
