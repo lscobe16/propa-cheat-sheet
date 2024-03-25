@@ -26,29 +26,35 @@ foo(X, Y) :- operation_where_we_only_want_the_first_result(X, Z), !, Y = Z.
 % Idiom: generate and test
 foo(X, Y) :- generator(X, Y), tester(Y).
 % z.B.:
+nat(0).
+nat(X) :- nat(Y), X is Y+1.
 sqrt(X,Y) :- nat(Y),
     Y2 is Y*Y, Y3 is (Y+1)*(Y+1),
     Y2 =< X, X < Y3.
 % Früher testen => effizienter
-
-% Listen mit Cons:
-[1,2,3] = [1|[2|[3|[]]]].
-[1,2,3|[4,5,6,7]] = [1,2,3,4,5,6,7].
 ```
 \columnbreak
 
 ```prolog
+% Listen mit Cons:
+[1,2,3] = [1|[2|[3|[]]]].
+[1,2,3|[4,5,6,7]] = [1,2,3,4,5,6,7].
 % === Arithmetik
 % erstmal nur Terme:
 2 - 1 \= 1.
 % Auswerten mit "is":
 N1 is N - 1.
 % Arithmetische Vergleiche:
+% Argumente müssen instanziiert sein!
 =:=, =\=, <,=<, >, >=
+even/1, odd/1 % Generatoren aus VL
 ```
 \End{multicols}
 
+\vspace{-3em}
 ## Wichtige Funktionen
+<!-- TODO gibt's noch praktische aus VL oder Übung? -->
+
 Built-In:
 ```prolog
 % member(X, L): X ist in Liste L  (alle Richtungen)
@@ -89,4 +95,11 @@ permute([X|R],P) :- permute(R,P1),append(A,B,P1),append(A,[X|B],P).
 % lookup(N, D, A) mit A instanziiert: D[N] <- A setzen 
 lookup(N,[(N,A)|_],A1) :- !,A=A1.
 lookup(N,[_|T],A) :- lookup(N,T,A).
+
+% QuickSort: qsort(L, SortedL)   (nur vorwärts)
+qsort([],[]).
+qsort([X|R],Y) :- split(X,R,R1,R2), qsort(R1,Y1), qsort(R2,Y2), append(Y1,[X|Y2],Y).
+split(X,[],[],[]).
+split(X,[H|T],[H|R],Y) :- X>H, split(X,T,R,Y).
+split(X,[H|T],R,[H|Y]) :- X=<H, split(X,T,R,Y).
 ```

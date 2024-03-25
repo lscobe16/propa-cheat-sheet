@@ -42,7 +42,7 @@ foo x = case x of
           [1] -> "apple"
           (420:l) -> "pear"
 
--- list comprehension
+-- list comprehension, first <- is outer most loop
 [foo x | x <- [1..420], x `mod` 2 == 0]
 
 [0..5] == [0,1,2,3,4,5]
@@ -128,21 +128,33 @@ until :: (a -> Bool) -> (a -> a) -> a -> a
 any :: Foldable t => (a -> Bool) -> t a -> Bool
 -- return true if the predicate is true for all elements
 all :: Foldable t => (a -> Bool) -> t a -> Bool
--- return sorted copy of list
+-- return sorted copy of list (task has to allow it!)
 import Data.List (sort)
 sort :: Ord a => [a] -> [a]
 ```
+<!-- Source: https://ilias.studium.kit.edu/goto.php?target=frm_2215356_280706&client_id=produktiv -->
 Custom implementations:
+\Begin{multicols}{2}
 ```haskell
 -- quicksort
-qsort :: (Ord t) => [t] -> [t]
+qsort :: Ord a => [a] -> [a]
 qsort [] = []
-qsort (p:ps) = qsort (filter (<= p) ps) ++ p:qsort (filter (> p) ps)
+qsort (p:ps) = qsort (filter (<= p) ps) 
+          ++ p:qsort (filter (>  p) ps)
 -- remove consecutive duplicates (strong with sort)
 uniq :: Eq a => [a] -> [a]
 uniq [] = []
 uniq (x:y:xs) | x == y = x:uniq xs
 uniq (x:xs) = x:uniq xs
--- reverse list using fold
-reverse = foldl (flip (:)) []
 ```
+\columnbreak
+```haskell
+reverse = foldl (flip (:)) []
+
+iter f n = foldr (.) id $ take n $ repeat f -- f^n
+
+oddPrimes (p:ps) = 
+    p:(oddPrimes [p’ | p’ <- ps, p’ ‘mod‘ p /= 0])
+primes = 2:oddPrimes (tail odds)
+```
+\End{multicols}
