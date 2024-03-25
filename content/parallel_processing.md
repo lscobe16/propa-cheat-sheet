@@ -123,6 +123,8 @@ There is no global order on communication events, but events within the same sen
 
 ### Collective Operations
 
+`count`-Parameters are always **per processor**! $\Rightarrow$ usually: `sendcount` = `recvcount`.
+
 ```cpp
 int MPI_Bcast(void* buffer, int count, MPI_Datatype t, int root, MPI_Comm comm);
 ```
@@ -153,9 +155,9 @@ int MPI_Gather(void *sendbuf, int sendcount, MPI_Datatype sendtype,
 int MPI_Scatterv(void* sendbuf, int* sendcounts, int* displacements, MPI_Datatype sendtype,
                  void* recvbuf, int recvcount, MPI_Datatype recvtype, int root, MPI_Comm comm)
 ```
-Usually: `sendcount` = `recvcount` (here 1)  
 `sendcounts[i]` = how many elements to send to proc i  
-`displacements[i]` = first element to send to proc i (no overlap allowed, but gaps
+`displacements[i]` = first element to send to proc i (no overlap allowed, but gaps)
+
 $$
 \begin{bmatrix}
 A_0 & A_1 & A_2 \\
