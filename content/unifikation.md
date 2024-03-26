@@ -58,3 +58,4 @@ $$
 - Resolutionsregel ist korrekt: $P \vdash \tau_1, \dots, \tau_n \Rightarrow P \vDash \tau_1, \dots, \tau_n$
 - Resolutionsregel ist vollständig: $P \vDash \tau_1, \dots, \tau_n \Rightarrow P \vdash \tau_1, \dots, \tau_n$
 - Prolog ist korrekt, aber nicht vollständig (wegen deterministischer Regelwahl)
+

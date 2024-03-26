@@ -89,3 +89,4 @@ Bei \textsc{Let}:
 4. Benutze $\Gamma'$ im rechten Teilbaum
 
 \End{multicols}
+
