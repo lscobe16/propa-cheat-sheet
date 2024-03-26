@@ -7,10 +7,10 @@
 - Function application is left associative $\lambda x.\ f\ x\ y = \lambda x.\ ((f\ x)\ y)$
 - untyped lambda calculus is turing complete
 
-### Primitive Operations
+### Common Functions
 
-#### Let
 - let $x = t_1$ in $t_2$ wird zu $(\lambda x.\,t_2)\,t_1$
+- Rekursion: $Y = \lambda f.\,(\lambda x.\,f\ (x\ x))\ (\lambda x.\,f\ (x\ x))$
 
 #### Church Numbers
 - $c_0 = \lambda s.\,\lambda z.z$
