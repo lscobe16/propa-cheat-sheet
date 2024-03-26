@@ -117,7 +117,6 @@ See extra Cheat Sheet: https://github.com/rudymatela/concise-cheat-sheets
 `foldr` can handle infinite lists (streams) if combinator does sometimes not depend on right rest. `foldl` cannot.  
 Result is a list $\Rightarrow$ probably want to use foldr
 
-<!-- TODO Verweise auf anderes Cheatsheet schreiben? -->
 Additional built-ins:
 ```haskell
 -- in a list of type [(key, value)]  returns first element where key matches given value

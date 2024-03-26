@@ -53,7 +53,6 @@ even/1, odd/1 % Generatoren aus VL
 
 \vspace{-3em}
 ## Wichtige Funktionen
-<!-- TODO gibt's noch praktische aus VL oder Übung? -->
 
 Built-In:
 \Begin{multicols}{2}
