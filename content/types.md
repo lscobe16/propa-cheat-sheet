@@ -84,7 +84,7 @@ Gesucht: Lösung $(\sigma, \tau)$, sodass $\sigma\Gamma \vdash t\;:\;\tau$
 Bei \textsc{Let}:
 
 1. Sammle Gleichungen aus linkem Teilbaum in $C_{let}$
-2. Berechne $\sigma_{let}$ von $C_{let}$
+2. Berechne mgu $\sigma_{let}$ von $C_{let}$
 3. $\Gamma' := \sigma_{let}, x: ta(\sigma_{let}(\alpha_i), \sigma_{let}(\Gamma))$
 4. Benutze $\Gamma'$ im rechten Teilbaum
 
