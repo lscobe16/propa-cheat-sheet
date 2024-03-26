@@ -62,9 +62,9 @@ Example: $(\lambda x.\,x\ x)\ (\lambda x.\,x\ x)$
 
 **Full $\beta$-Reduction**: Every Redex can be reduced at any time.
 
-**Normal Order**: The leftmost outer redex gets reduced.
+**Normal Order**: The leftmost Redex gets reduced.
 
-**Call by Name (CBN)**: Reduce the leftmost outer Redex *if* not surrounded by a lambda.
+**Call by Name (CBN)**: Reduce the leftmost Redex *if* not surrounded by a lambda.
 Example: 
 \begin{align*}
 &(\lambda \textcolor{green}{y}.\ (\lambda x.\ \textcolor{green}{y}\ (\lambda z.\ z)\ x))\ \textcolor{red}{((\lambda x.\ x)\ (\lambda y.\ y))} \\
