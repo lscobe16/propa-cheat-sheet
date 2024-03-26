@@ -34,6 +34,7 @@
   - Ausgabe: Program in Assembler oder Maschinencode
 
 \End{multicols}
+\vspace{-4em}
 
 ## Grammatiken
 

@@ -127,6 +127,8 @@ Callable<Integer> myCallable = () -> { return 42; };
 Future<Integer> myFuture = executor.submit(myCallable);
 int x = myFuture.get();
 int x = myFuture.get(1, TimeUnit.SECONDS); // may throw TimeoutException
+CompletableFuture<Integer> cFuture = CompletableFuture.supplyAsync(() -> ...);
+CompletableFuture<...> transformed = cFuture.thenApply((Integer res) -> ...).thenApply(...);
 ```
 
 ### Atomic
@@ -162,11 +164,16 @@ Form of a Hoare triple $\{P\}\ C\ \{Q\}$
 - **Non-Redundancy-Principle:** the body of a routine shall not test for the routine's precondition
 - **Precondition Availability:** precondition should be understandable by every client
 - **Assertion Violation Rule:** a runtime assertion violation is the manifestation of a bug in the software
+- **Liskov Substitution Principle**
+  - Along specialization: guarantees may strengthen, requirements may weaken
+  - $\texttt{Precondition}_{Super} \Rightarrow \texttt{Precondition}_{Sub}, 
+    \texttt{Postcondition}_{Sub} \Rightarrow \texttt{Postcondition}_{Super}, 
+    \texttt{Invariants}_{Sub} \Rightarrow \texttt{Invariants}_{Super}$
 
+\pagebreak
 ```java
 class Stack {
   //@ invariant size >= 0
-
   /*@ requires size > 0;
     @ ensures size == \old(size) - 1;
     @ ensures \result == \old(top());
@@ -180,12 +187,4 @@ class Stack {
   /*@ nullable @*/ /*@ pure @*/ Object top() { ... }
 }
 ```
-
-### Liskov Substitution Principle
-
-Guarantees may strengthen, requirements may weaken.
-
-- preconditions must not be more restrictive than those of the overwritten method: $\texttt{Precondition}_{Super} \Rightarrow \texttt{Precondition}_{Sub}$
-- postcondition must be at least as restrictive as thos of the overwritten methods: $\texttt{Postcondition}_{Sub} \Rightarrow \texttt{Postcondition}_{Super}$
-- class invariants must be at least as restrictive as those of the superclass: $\texttt{Invariants}_{Sub} \Rightarrow \texttt{Invariants}_{Super}$
 

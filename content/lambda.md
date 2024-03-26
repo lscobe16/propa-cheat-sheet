@@ -21,8 +21,10 @@
 - **Successor Function**
     - $succ\,c_2=c_3$
     - $succ = \lambda n.\,\lambda s.\,\lambda z.\, s\ (n\ s\ z)$
+    - $pred$
 - **Arithmetic Operations**
     - $plus = \lambda m.\,\lambda n.\,\lambda s.\,\lambda z.\,m\ s\ (n\ s\ z)$
+    - $minus = \lambda m.\,\lambda n.\,n pred m$
     - $times = \lambda m.\,\lambda n.\,\lambda s.\,n\ (m\ s)$
     - $exp = \lambda m.\,\lambda n.\,n\ m$
 - $isZero = \lambda n.\,n\ (\lambda x.\,c_{false})\ c_{true}$

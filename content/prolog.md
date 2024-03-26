@@ -56,6 +56,7 @@ even/1, odd/1 % Generatoren aus VL
 <!-- TODO gibt's noch praktische aus VL oder Übung? -->
 
 Built-In:
+\Begin{multicols}{2}
 ```prolog
 % member(X, L): X ist in Liste L  (alle Richtungen)
 member(X,[X|R]).
@@ -64,11 +65,19 @@ member(X,[Y|R]) :- member(X,R).
 % append(A, B, C): C = A ++ B  (alle Richtungen)
 append([],L,L).
 append([X|R],L,[X|T]) :- append(R,L,T).
+```
+\columnbreak
+```prolog
+% delete(A, X, B): B = alle X aus A entfernen (aR)
+delete([X|L],X,L).
+delete([X|L],Y,[X|L1]) :- delete(L,Y,L1).
 
-% reverse(L, R): R ist Liste L rückwerts  (alle Richtungen)
+% reverse(L, R): R ist Liste L rückwerts  (aR)
 reverse([],[]).
 reverse([X|R],Y) :- reverse(R,Y1),append(Y1,[X],Y).
-
+```
+\End{multicols}
+```prolog
 % N ist Länger der Liste L   (alle Richtungen)
 length(L, N).
 
@@ -92,7 +101,8 @@ permute([],[]).
 permute([X|R],P) :- permute(R,P1),append(A,B,P1),append(A,[X|B],P).
 
 % lookup(N, D, A) mit A uninstanziiert: A <- D[N] nachschauen
-% lookup(N, D, A) mit A instanziiert: D[N] <- A setzen 
+% lookup(N, D, A) mit A instanziiert: D[N] <- A setzen (überschreiben nicht möglich)
+% Vorteil ggü. member((N, A), D): nur Einträge am Anfang -> keine Reerfüllung
 lookup(N,[(N,A)|_],A1) :- !,A=A1.
 lookup(N,[_|T],A) :- lookup(N,T,A).
 
