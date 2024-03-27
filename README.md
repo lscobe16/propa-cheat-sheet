@@ -13,9 +13,10 @@ Advantages:
 
 ## Building
 
-Prerequisites: bash, pandoc, maybe LaTeX idk
-Build using:
+Prerequisites: bash, pandoc, maybe LaTeX idk  
+Be sure that the line endings in combine.sh are LF only!  
 
+Build using:
 ```
 sh ./combine.sh
 ```
