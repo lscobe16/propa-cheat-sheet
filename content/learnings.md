@@ -22,6 +22,7 @@
 	- Pattern Matching vollständig?
 	- Reihenfolge der Teilziele am besten in der Reihenfolge, in der du es berechnen würdest (sicherer)
 	- es gibt viel, das sich einfach mit `member` oder `append` ausdrücken lässt
+	- Gegebene Tester-Prädikate nicht als Generator nutzen
 - Lamda-Kalkül
 	- Betareduktionen: abwechselnd einsetzen und ableiten, Klammern in extra Schritt erst weglassen (zeigen, dass keine Stringsubstitution)
 	- Variablen in Typen sind implizit allquantifizeirt (insb. in "allgemeinster Typ"), Quantoren sind in Typschemata und die sind nur in $\Gamma$
@@ -43,6 +44,7 @@
 	- Beim übernehmen von EOF in Indizmengen aufpassen!
 	- in `case` muss nicht immer das gematchte Token konsumiert werden. Nur wenn es in dieser Produktion selbst vorkommt
 	- Grammatik-Ableitungsschritte angeben = $\Rightarrow$-Kette
+	- Wenn AST erzeugt werden soll: `default: error(); return null;`
 - Java Bytecode
 	- `iload i` statt `iload_i` verwenden
 	- Bei Java angeben
@@ -53,7 +55,7 @@
 <!-- 
 Gemachte AKs:
 - SS 23
-- Aufheben: WS 22/23
+- WS 22/23
 - SS 22
 - WS 21/22
 - SS 21 teils
