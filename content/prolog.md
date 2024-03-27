@@ -67,19 +67,15 @@ append([X|R],L,[X|T]) :- append(R,L,T).
 ```
 \columnbreak
 ```prolog
-% delete(A, X, B): B = alle X aus A entfernen (aR)
-delete([X|L],X,L).
-delete([X|L],Y,[X|L1]) :- delete(L,Y,L1).
-
 % reverse(L, R): R ist Liste L rückwerts  (aR)
 reverse([],[]).
 reverse([X|R],Y) :- reverse(R,Y1),append(Y1,[X],Y).
+
+% N ist Länger der Liste L   (alle Richtungen)
+length(L, N).
 ```
 \End{multicols}
 ```prolog
-% N ist Länger der Liste L   (alle Richtungen)
-length(L, N).
-
 % Prüft, ob Prädikat X erfüllbar ist (NICHT: findet Instanziierung, sodass X nicht erfüllt ist)
 not(X) :- call(X),!,fail.
 not(X).
@@ -95,6 +91,11 @@ atomic(X). % Prüft ob X ein Atom oder eine Zahl ist
 
 Weiter:
 ```prolog
+% delete(A, X, B): B = genau 1 X aus A entfernen (aR)
+% Das hier ist von VL Folien und anders als die Standardbibluithek
+delete([X|L],X,L).
+delete([X|L],Y,[X|L1]) :- delete(L,Y,L1).
+
 % Prüft ob Permutation voneinander. Iteriert durch alle Permutationen bei Reerfüllung   (alle Richtungen)
 permute([],[]).
 permute([X|R],P) :- permute(R,P1),append(A,B,P1),append(A,[X|B],P).
