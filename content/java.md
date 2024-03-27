@@ -91,7 +91,8 @@ t.interrupt();
 
 ### Happens-before Relation
 
-If t1 "happens before" t2, it is guaranteed that potential side effects of t1 are visible to t2.
+If t1 "happens before" t2, it is guaranteed that potential side effects of t1 are visible to t2.  
+This is a partial order and thus transitive!
 
 Rules that create "happens-before"-relationship:
 

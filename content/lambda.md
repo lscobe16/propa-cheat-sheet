@@ -57,7 +57,7 @@ $$
 
 A term that can no longer be reduced is called **Normal Form**. 
 The Normal Form is unique. 
-Terms that don't get reduced to Normal Form diverge (grow infinitely large).
+Terms that don't get reduced to Normal Form most often diverge (grow infinitely large).
 Example: $(\lambda x.\,x\ x)\ (\lambda x.\,x\ x)$
 
 **Full $\beta$-Reduction**: Every Redex can be reduced at any time.

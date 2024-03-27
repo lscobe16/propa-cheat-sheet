@@ -63,7 +63,6 @@ $\text{First}_k(\chi) = \{\beta \mid \exists \tau \in \Sigma^* : \chi \Rightarro
 k-Anfänge der Strings, die aus $\chi$ generiert werden können  
 $\text{Follow}_k = \{\beta \mid \exists \alpha, \omega \in (\Sigma \cup V)^* \text{ mit } S \Rightarrow^* \alpha \chi \omega \land \beta \in \text{First}_k(\omega)\} =$
 k-Anfänge der Strings, die __hinter__ $\chi$ generiert werden können  
-<!-- TODO: Tricks (nach Altklausuren) -->
 
 - Kontextfreie Grammatik ist SLL($k$) gdw. für alle Produktionen eines Nichtterminals $A \to \alpha$ die Mengen $\text{First}_k(\alpha \text{Follow}_k(A))$ (**Indizmengen**) unterschiedlich sind.
   - $k = 1, \alpha \not\Rightarrow^* \varepsilon, \beta \not\Rightarrow^* \varepsilon$: genügt, wenn $\text{First}(\alpha) \cap \text{First}(\beta) = \emptyset$
@@ -200,7 +199,8 @@ setNull();
 
 #### Loops
 
-`while`-Loop: Label, expression, conditional jump out, body, goto label
+`while`-Loop: `loop:`, condition, conditional jump to `afterLoop`, body, `goto loop`, `afterLoop:`  
+`if`-$\mathfrak{Loop}$: condition, conditional jump to `then`, `goto else`, then, `goto afterIf`, else,`afterIf:`  (shortcircuiting!)
 
 \Begin{multicols}{2}
 #### Method Call
@@ -253,7 +253,8 @@ goto label ; unconditionally jump to label
 
 ; 2-conditional: pop and look (secondtop ? top)
 ; for ints:
-if_icmpeq, if_icmpge, if_icmpgt, if_icmple, if_icmplt
+if_icmpeq, if_icmpne
+if_icmpge, if_icmpgt, if_icmple, if_icmplt
 if_acmpeq label ; jump if refs are equal
 if_acmpne label ; jump if refs are different
 
@@ -262,13 +263,16 @@ if_acmpne label ; jump if refs are different
 ifeq, ifge, ifgt, iflt, ifle, ifne
 ifnull label ; jump if reference is null
 ifnonnull label ; jump if reference is not null
-
+```
+\columnbreak
+```nasm
 ; Arithmetic
 iinc i const ; increment int variable i by const
 iadd ; Integer addition
 isub ; Integer subtraction (secondtop - top)
 imul ; Integer multiplication
 idiv ; Integer division (secondtop / top)
+irem ; Integer modulo (secondtop % top)
 ineg ; negate int
 ishl ; shift left (secondtop >> top)
 ishr ; shift right (secondtop << top)
