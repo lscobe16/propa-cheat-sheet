@@ -90,6 +90,7 @@ instance Eq Bool where
 
 \End{multicols}
 
+\pagebreak
 ## Idioms
 
 ```haskell
