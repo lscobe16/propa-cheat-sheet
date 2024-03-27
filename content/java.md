@@ -123,7 +123,8 @@ volatile int c = 420;
 - `ExecutorService` is an interface that provides further lifecycle management logic (e.g. `Future`s):
 
 ```java
-ExecutorService executor = Executors.newCachedThreadPool();
+ExecutorService executor = Executors.newCachedThreadPool(); // OR
+ExecutorService executor = Executors.newFixedThreadPool(4);
 Callable<Integer> myCallable = () -> { return 42; };
 Future<Integer> myFuture = executor.submit(myCallable);
 int x = myFuture.get();
