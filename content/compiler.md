@@ -252,14 +252,14 @@ Xreturn ; return value of type X
 goto label ; unconditionally jump to label
 
 ; 2-conditional: pop and look (secondtop ? top)
-; for ints:
+; for ints, all take a label:
 if_icmpeq, if_icmpne
 if_icmpge, if_icmpgt, if_icmple, if_icmplt
 if_acmpeq label ; jump if refs are equal
 if_acmpne label ; jump if refs are different
 
-; 1-conditional: pop and look at top
-; ints:
+; 1-conditional: pop and compare top with 0
+; for ints, all take a label:
 ifeq, ifge, ifgt, iflt, ifle, ifne
 ifnull label ; jump if reference is null
 ifnonnull label ; jump if reference is not null
